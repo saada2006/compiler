@@ -1,0 +1,2 @@
+DECL: string s "Hello World"
+FUNC: print s " Welcome to OverEngineered

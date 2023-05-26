@@ -1,0 +1,38 @@
+package vars;
+
+public class StringVar implements Variable {
+
+	String data;
+	
+	public StringVar(String s) throws VariableException {
+		String raw = s.substring(1, s.length() - 1); // remove quotes
+		
+		data = "";
+		for(int i = 0; i < raw.length(); i++) {
+			if(raw.charAt(i) != '\\') {
+				data += raw.charAt(i);
+			} else {
+				if(i + 1 == raw.length()) {
+					throw new VariableException("Escape sequence needs extra character!");
+				}
+				char escape = raw.charAt(i + 1);
+				
+				if(escape == 'n') {
+					data += '\n';
+				} else {
+					throw new VariableException("Unknown escape sequence " + escape);
+				}
+				i++;
+			}
+		}
+	}
+	
+	public String getString() {
+		return data;
+	}
+	
+	public void setString(String s) {
+		data = s;
+	}
+
+}

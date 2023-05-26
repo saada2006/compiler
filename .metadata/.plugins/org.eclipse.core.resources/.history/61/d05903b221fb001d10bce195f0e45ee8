@@ -1,0 +1,2 @@
+DECL: s "Hello World"
+FUNC: print s

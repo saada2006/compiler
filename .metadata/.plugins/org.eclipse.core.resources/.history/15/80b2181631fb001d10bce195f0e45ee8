@@ -1,0 +1,29 @@
+package vars;
+
+public class IntVar implements Variable {
+
+	int data;
+	
+	public IntVar(int x) {
+		data = x;
+	}
+	
+	public IntVar(String s) {
+		data = Integer.valueOf(s);
+	}
+	
+	public void setInt(int x) {
+		data = x;
+	}
+	
+	public int getInt() {
+		return data;
+	}
+	
+	public String getString() {
+		return Integer.toString(data);
+	}
+	
+
+
+}

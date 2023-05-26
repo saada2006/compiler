@@ -1,0 +1,5 @@
+package exec;
+
+public class FunctionException extends Exception {
+
+}

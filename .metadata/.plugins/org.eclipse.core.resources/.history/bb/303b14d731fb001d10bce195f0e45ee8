@@ -1,0 +1,208 @@
+// Main entrypoint for the "compiler" program, tbh this is more of an interpreter
+// Copyright 2069, your mom corporation
+package exec;
+
+import vars.*;
+
+import java.io.*;
+import java.util.*;
+
+public class Program {
+	
+	static Registry registry = new Registry();
+	
+	public static void main(String[] fkjbdbfdjhgbdhfjjjjsdiugnskjvdbgdfxvsvdsfhisd) throws Exception {
+		// assume code input is in a folder
+		BufferedReader br = new BufferedReader(new FileReader("examples/if.txt"));
+		ArrayList<String> source = new ArrayList<String>();
+		
+		while(true) {
+			String s = br.readLine();
+			if(s == null) {
+				break;
+			} else {
+				if(s.contains("#")) 
+					s = s.substring(0, s.indexOf("#"));
+				
+				if(s.length() != 0)
+					source.add(s);
+			}
+		}
+		
+		int ireg = 0;
+		int stack = 0;
+		for(int i = 0; i < source.size(); i++) {
+			String line = source.get(i);
+			String instruction = line.substring(0, line.indexOf(":"));
+			String data = line.substring(line.indexOf(":") + 1);
+			ArrayList<String> args = getArgsList(data);
+			
+			if(instruction.equals("DECL")) {
+				// declaring new variable
+				String type = args.get(0);
+				String name = args.get(1);
+				String value = args.get(2);
+				Variable v = null;
+				if(type.equals("string")) {
+					v = new IntVar(value);
+				} else if(type.equals("int")) {
+					v = new IntVar(value);
+				} else {
+					throw new VariableException("Unknown variable type " + type);
+				}
+				
+				registry.declareVar(name, v);
+			} else if(instruction.equals("FUNC")) {
+				ArrayList<Variable> vargs = new ArrayList<Variable>();
+				for(int j = 1; j < args.size(); j++) {
+					vargs.add(readToken(args.get(j)));
+				}
+				StdLib.execFunc(args.get(0), vargs);
+			} else if(instruction.equals("MATH")) {
+				String oper = args.get(0);
+				IntVar x = getIntVar(args.get(1));
+				IntVar y = getIntVar(args.get(2));
+				
+				if(oper.equals("ADD")) {
+					ireg = x.getInt() + y.getInt();
+				} else if(oper.equals("SUB")) {
+					ireg = x.getInt() - y.getInt();
+				} else if(oper.equals("MUL")) {
+					ireg = x.getInt() * y.getInt();
+				} else if(oper.equals("DIV")) {
+					ireg = x.getInt() / y.getInt();
+				} else {
+					throw new InstructionException("Unknown math sub-instruction: " + oper);
+				}
+			} else if(instruction.equals("STOI")) {
+				if(args.size() != 1) {
+					throw new InstructionException("STOI requires 1 arguement!");
+				}
+				
+				IntVar iv = (IntVar)registry.retreiveVar(args.get(0));
+				iv.setInt(ireg);
+			} else if(instruction.equals("COND")) {
+				stack++;
+				Variable x = readToken(args.get(0));
+				String oper = args.get(1);
+				Variable y = readToken(args.get(2));
+				
+				if(!(((x instanceof IntVar) && (y instanceof IntVar)) || ((x instanceof StringVar) && (y instanceof StringVar)))) {
+					throw new InstructionException("Values must be of same type!");
+				}
+				
+				boolean result = false;
+				
+				if(oper.equals("==")) {
+					result = x.equalOp(y);
+				} else if(oper.equals("!=")) {
+					result = x.nequalOp(y);
+				} else if(oper.equals("<")) {
+					result = x.lessOp(y);
+				} else if(oper.equals(">")) {
+					result = x.greaterOp(y);
+				} else if(oper.equals("<=")) {
+					result = x.lequalOp(y);
+				} else if(oper.equals(">=")) {
+					result = x.gequalOp(y);
+				} else {
+					throw new InstructionException("Unknown comparison operand " + oper);
+				}
+				
+				System.out.println(result);
+				
+				if(!result) {
+					for(int j = i + 1; j < source.size(); j++) {
+						String fline = source.get(j);
+						String finstruction = line.substring(0, fline.indexOf(":"));
+						if(finstruction.equals("ALTR")) {
+							i = j;
+							break;
+						}
+					}	
+				}
+			} else if(instruction.equals("ALTR")) {
+				stack--;
+				for(int j = i + 1; j < source.size(); j++) {
+					String fline = source.get(j);
+					String finstruction = line.substring(0, fline.indexOf(":"));
+					if(finstruction.equals("ENDI")) {
+						i = j;
+						break;
+					}
+				}	
+			} else if(instruction.equals("ENDI")) {
+				stack--;
+			} else {
+				throw new InstructionException("Unknown instruction " + instruction);
+			}
+		}
+		
+		
+	}
+	
+	public static ArrayList<String> getArgsList(String s) {
+		s += " ";
+		ArrayList<String> args = new ArrayList<String>();
+		
+		boolean inQuotes = false;
+		
+		int start = 0;
+		for(int i = 0; i < s.length(); i++) {
+			if(i + 1 != s.length()) {
+				if(inQuotes) {
+					if(s.charAt(i) == '"') {
+						inQuotes = false;
+					}
+					continue;
+				}
+				
+				if(s.charAt(i) == '"') {
+					inQuotes = true;
+					continue;
+				}
+			}
+			
+			if(s.charAt(i) == ' ') {
+				if(i != start) {
+					args.add(s.substring(start, i));
+				}
+				
+				start = i + 1;
+			}
+		}
+		
+		//System.out.println("Num args: " + args.size());
+		//for(String str : args) {
+		//	System.out.println(str);
+		//}
+		
+		return args;
+	}
+	
+	public static IntVar getIntVar(String token) throws VariableException {
+		Variable v = readToken(token);
+		if(!(v instanceof IntVar)) {
+			throw new VariableException(token + "is not an integer literal");
+		}
+		return (IntVar)v;
+	}
+	
+	public static Variable readToken(String token) throws VariableException {
+		Variable v;
+		if(registry.hasVar(token)) {
+			v = registry.retreiveVar(token);
+		} else {
+			if(token.charAt(0) == '"' && token.charAt(token.length() - 1) == '"') {
+				v = new StringVar(token);
+			} else if(token.matches("-?\\d+")) {
+				v = new IntVar(token);
+			}
+			else {
+				throw new VariableException("Improperly formatted variable or literal " + token);
+			}
+		}
+		return v;
+	}
+	
+}

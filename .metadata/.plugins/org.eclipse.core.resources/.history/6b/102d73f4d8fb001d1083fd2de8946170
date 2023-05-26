@@ -1,0 +1,3 @@
+# This basic example shows variables, literals, and the print function in action
+DECL: string s "Hello World"
+FUNC: print s " Welcome to this assembly-looking language"

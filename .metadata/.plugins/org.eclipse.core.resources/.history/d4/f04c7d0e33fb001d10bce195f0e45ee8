@@ -1,0 +1,71 @@
+package vars;
+
+public class IntVar implements Variable {
+
+	int data;
+	
+	public IntVar(int x) {
+		data = x;
+	}
+	
+	public IntVar(String s) {
+		data = Integer.valueOf(s);
+	}
+	
+	public void setInt(int x) {
+		data = x;
+	}
+	
+	public int getInt() {
+		return data;
+	}
+	
+	public String getString() {
+		return Integer.toString(data);
+	}
+
+	@Override
+	public boolean equalOp(Variable other) {
+		int x = data;
+		int y = ((IntVar)other).data;
+		return (x == y);
+	}
+
+	@Override
+	public boolean nequalOp(Variable other) {
+		int x = data;
+		int y = ((IntVar)other).data;
+		return (x != y);
+	}
+
+	@Override
+	public boolean gequalOp(Variable other) {
+		int x = data;
+		int y = ((IntVar)other).data;
+		return (x >= y);
+	}
+
+	@Override
+	public boolean lequalOp(Variable other) {
+		int x = data;
+		int y = ((IntVar)other).data;
+		return (x <= y);
+	}
+
+	@Override
+	public boolean greaterOp(Variable other) {
+		int x = data;
+		int y = ((IntVar)other).data;
+		return (x > y);
+	}
+
+	@Override
+	public boolean lessOp(Variable other) {
+		int x = data;
+		int y = ((IntVar)other).data;
+		return (x < y);
+	}
+	
+
+
+}

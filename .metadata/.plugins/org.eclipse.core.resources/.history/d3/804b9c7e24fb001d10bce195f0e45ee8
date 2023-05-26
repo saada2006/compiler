@@ -1,0 +1,15 @@
+package vars;
+
+public class StringVar implements Variable {
+
+	String data;
+	
+	public StringVar(String s) {
+		data = new String(s);
+	}
+	
+	public String getString() {
+		return data;
+	}
+
+}

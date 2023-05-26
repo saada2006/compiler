@@ -1,0 +1,16 @@
+package exec;
+
+import java.io.File;
+
+public class Program {
+
+	public static void main(String[] args) throws Exception {
+		// assume code input is in a folder
+		File f = new File("code.txt");
+		if(!f.exists()) {
+			f.createNewFile();
+		}
+		
+	}
+	
+}

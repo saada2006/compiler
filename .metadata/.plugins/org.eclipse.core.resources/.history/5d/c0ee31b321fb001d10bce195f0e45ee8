@@ -1,0 +1,29 @@
+// Main entrypoint for the "compiler" program, tbh this is more of an interpreter
+// Copyright 2069, your mom corporation
+package exec;
+
+import java.io.*;
+import java.util.*;
+
+public class Program {
+
+	public static void main(String[] args) throws Exception {
+		// assume code input is in a folder
+		BufferedReader br = new BufferedReader(new FileReader("examples/helloworld.txt"));
+		ArrayList<String> source = new ArrayList<String>();
+		
+		while(true) {
+			String s = br.readLine();
+			if(s == null) {
+				break;
+			} else {
+				source.add(s);
+			}
+		}
+		
+		
+		
+		
+	}
+	
+}

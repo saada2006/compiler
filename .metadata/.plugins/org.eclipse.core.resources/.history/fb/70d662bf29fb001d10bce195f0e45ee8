@@ -1,0 +1,5 @@
+# This program takes an integer and does some math with it
+DECL: int x 5
+MATH: x+1
+STOR: x
+FUNC: print x

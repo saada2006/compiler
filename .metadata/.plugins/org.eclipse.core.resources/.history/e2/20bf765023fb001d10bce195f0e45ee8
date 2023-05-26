@@ -1,0 +1,8 @@
+package vars;
+
+public interface Variable {
+	
+	// I am not using toString since I want toString to print debugging information
+	public abstract String getString();
+	
+}

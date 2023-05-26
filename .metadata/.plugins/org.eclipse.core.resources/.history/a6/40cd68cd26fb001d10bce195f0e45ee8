@@ -1,0 +1,5 @@
+# This example reads in a string and prints it
+FUNC: print "Hello! What is your name?\n"
+DECL: string s ""
+FUNC: readstr s
+FUNC: print "Hello " s

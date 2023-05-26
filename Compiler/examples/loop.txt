@@ -1,0 +1,10 @@
+# Basic looping
+DECL: int n
+FUNC: print "How many times do you want to iterate?\n"
+FUNC: read n
+DECL: int i 0
+LOOP: i < n
+FUNC: print i "\n"
+MATH: ADD i 1
+STOI: i
+ENDL:

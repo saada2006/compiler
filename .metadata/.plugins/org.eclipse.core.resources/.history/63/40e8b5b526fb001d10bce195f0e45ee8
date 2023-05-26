@@ -1,0 +1,3 @@
+# This example reads in a string and prints it
+DECL: string s ""
+FUNC: print "Hello! What is your name\n"

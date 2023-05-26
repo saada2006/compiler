@@ -1,0 +1,27 @@
+// Standard Library, contains basic functions like print and whatnot
+// Copyright 2069, your mom corporation
+package exec;
+
+import java.util.*;
+import vars.*;
+
+public class StdLib {
+
+	public static void print(ArrayList<Variable> args) {
+		String output = "";
+		for(Variable v : args) {
+			output += v.getString();
+		}
+		
+		System.out.print(output);
+	}
+	
+	public static void execFunc(String func, ArrayList<Variable> args) throws FunctionException {
+		if(func == "print") {
+			print(args);
+		} else {
+			throw new FunctionException("No such standard library function " + func);
+		}
+	}
+	
+}

@@ -1,0 +1,17 @@
+# Basic if conditions
+DECL: int x 0
+DECL: int y 0
+FUNC: print "Gimme two ints"
+FUNC: read x y
+COND: x > y 
+FUNC: print "The first integer is greater than the second integer
+ALTR: 
+FUNC: print "The second integer is less than or eequal to the second integer
+ENDI:
+FUNC: print "I am now outside the conditional"
+MATH: MUL x y
+DECL: int result 0
+STOI: result
+COND: result > 100
+FUNC: print "The result is greater than 100"
+ENDI:

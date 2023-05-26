@@ -1,0 +1,105 @@
+// Main entrypoint for the "compiler" program, tbh this is more of an interpreter
+// Copyright 2069, your mom corporation
+package exec;
+
+import vars.*;
+
+import java.io.*;
+import java.util.*;
+
+public class Program {
+	
+	public static void main(String[] fkjbdbfdjhgbdhfjjjjsdiugnskjvdbgdfxvsvdsfhisd) throws Exception {
+		// assume code input is in a folder
+		BufferedReader br = new BufferedReader(new FileReader("examples/helloworld.txt"));
+		ArrayList<String> source = new ArrayList<String>();
+		
+		while(true) {
+			String s = br.readLine();
+			if(s == null) {
+				break;
+			} else {
+				source.add(s);
+			}
+		}
+		
+		
+		Registry registry = new Registry();
+		for(int i = 0; i < source.size(); i++) {
+			String line = source.get(i);
+			String instruction = line.substring(0, line.indexOf(":"));
+			String data = line.substring(line.indexOf(":") + 1);
+			ArrayList<String> args = getArgsList(data);
+			
+			if(instruction.equals("DECL")) {
+				// declaring new variable
+				String type = args.get(0);
+				String name = args.get(1);
+				String value = args.get(2);
+				registry.declareVar(name, new StringVar(value));
+			} else if(instruction.equals("FUNC")) {
+				ArrayList<Variable> vargs = new ArrayList<Variable>();
+				for(int j = 1; j < args.size(); j++) {
+					String token = args.get(j);
+					Variable v = null;
+					System.out.print("reading literal: " + token);
+
+					if(registry.hasVar(token)) {
+						v = registry.retreiveVar(token);
+					} else {
+						if(token.charAt(0) == '"' && token.charAt(token.length() - 1) == '"') {
+							v = new StringVar(token);
+						} else {
+							throw new VariableException("Improperly formatted variable or literal " + token);
+						}
+					}
+					vargs.add(v);
+				}
+				StdLib.execFunc(args.get(0), vargs);
+			} else {
+				throw new InstructionException("Unknown instruction " + instruction);
+			}
+		}
+		
+		
+	}
+	
+	public static ArrayList<String> getArgsList(String s) {
+		s += " ";
+		ArrayList<String> args = new ArrayList<String>();
+		
+		boolean inQuotes = false;
+		
+		int start = 0;
+		for(int i = 0; i < s.length(); i++) {
+			
+			if(inQuotes) {
+				if(s.charAt(i) == '"') {
+					inQuotes = false;
+				}
+				continue;
+			}
+			
+			if(s.charAt(i) == '"') {
+				inQuotes = true;
+				continue;
+			}
+			
+			if(s.charAt(i) == ' ') {
+				if(i != start) {
+					args.add(s.substring(start, i));
+				}
+				
+				start = i + 1;
+			}
+		}
+		
+		//System.out.println("Num args: " + args.size());
+		//for(String str : args) {
+		//	System.out.println(str);
+		//}
+		
+		return args;
+	}
+	
+}

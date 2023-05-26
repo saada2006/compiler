@@ -1,0 +1,9 @@
+package exec;
+
+public class InstructionException extends Exception {
+
+	public InstructionException(String s) {
+		super(s);
+	}
+	
+}
