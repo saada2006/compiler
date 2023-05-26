@@ -1,5 +1,3 @@
-// basic interface for all variables
-// specific types (e.g. int, string) are done via polymorphism
 package vars;
 
 public interface Variable {

@@ -1,4 +1,3 @@
-// string variable
 package vars;
 
 public class StringVar implements Variable {

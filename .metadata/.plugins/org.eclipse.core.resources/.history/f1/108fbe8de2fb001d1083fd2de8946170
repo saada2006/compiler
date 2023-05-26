@@ -1,4 +1,3 @@
-// exceptions regarding functions
 package exec;
 
 public class FunctionException extends Exception {

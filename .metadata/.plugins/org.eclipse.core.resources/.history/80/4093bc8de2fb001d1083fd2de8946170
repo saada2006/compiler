@@ -1,4 +1,3 @@
-// exceptions regarding variables
 package vars;
 
 public class VariableException extends Exception {

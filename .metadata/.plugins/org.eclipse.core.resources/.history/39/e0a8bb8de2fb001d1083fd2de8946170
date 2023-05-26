@@ -1,4 +1,5 @@
 // Main entrypoint for the "compiler" program, tbh this is more of an interpreter
+// Copyright 2069, your mom corporation
 package exec;
 
 import vars.*;
@@ -15,7 +16,6 @@ public class Program {
 		BufferedReader br = new BufferedReader(new FileReader("examples/loop.txt"));
 		ArrayList<String> source = new ArrayList<String>();
 		
-		// read source into memory
 		while(true) {
 			String s = br.readLine();
 			if(s == null) {
@@ -29,7 +29,6 @@ public class Program {
 			}
 		}
 		
-		// iterate over all lines to executre the program
 		int ireg = 0;
 		int stack = 0;
 		for(int i = 0; i < source.size(); i++) {
@@ -54,14 +53,12 @@ public class Program {
 				
 				registry.declareVar(name, v);
 			} else if(instruction.equals("FUNC")) {
-				// calling a function
 				ArrayList<Variable> vargs = new ArrayList<Variable>();
 				for(int j = 1; j < args.size(); j++) {
 					vargs.add(readToken(args.get(j)));
 				}
 				StdLib.execFunc(args.get(0), vargs);
 			} else if(instruction.equals("MATH")) {
-				// math operation
 				String oper = args.get(0);
 				IntVar x = getIntVar(args.get(1));
 				IntVar y = getIntVar(args.get(2));
@@ -74,13 +71,10 @@ public class Program {
 					ireg = x.getInt() * y.getInt();
 				} else if(oper.equals("DIV")) {
 					ireg = x.getInt() / y.getInt();
-				} else if(oper.equals("MOD")) {
-					ireg = x.getInt() % y.getInt();
 				} else {
 					throw new InstructionException("Unknown math sub-instruction: " + oper);
 				}
 			} else if(instruction.equals("STOI")) {
-				// store in int from register
 				if(args.size() != 1) {
 					throw new InstructionException("STOI requires 1 arguement!");
 				}
@@ -88,17 +82,14 @@ public class Program {
 				IntVar iv = (IntVar)registry.retreiveVar(args.get(0));
 				iv.setInt(ireg);
 			} else if(instruction.equals("COND")) {
-				// conditional
 				stack++;
-				
 				
 				boolean result = evaluateCondition(args);
 				if(!result) {
-					// go to alternative if exists
 					for(int j = i + 1; j < source.size(); j++) {
 						String fline = source.get(j);
 						String finstruction = fline.substring(0, fline.indexOf(":"));
-						if(finstruction.equals("ALTR") || finstruction.equals("ENDI")) {
+						if(finstruction.equals("ALTR")) {
 							i = j;
 							break;
 						}
@@ -106,7 +97,6 @@ public class Program {
 				}
 			} else if(instruction.equals("ALTR")) {
 				stack--;
-				// skip to after if block
 				for(int j = i + 1; j < source.size(); j++) {
 					String fline = source.get(j);
 					String finstruction = fline.substring(0, fline.indexOf(":"));
@@ -119,7 +109,6 @@ public class Program {
 				stack--;
 			} else if(instruction.equals("LOOP")) {
 				boolean result = evaluateCondition(args);
-				// exit loop if false
 				if(!result) {
 					for(int j = i + 1; j < source.size(); j++) {
 						String fline = source.get(j);
@@ -133,7 +122,6 @@ public class Program {
 					stack++;
 				}
 			} else if(instruction.equals("ENDL")) {
-				// go back to retry condition/reiterate
 				for(int j = i - 1; j >= 0; j--) {
 					String fline = source.get(j);
 					String finstruction = fline.substring(0, fline.indexOf(":"));

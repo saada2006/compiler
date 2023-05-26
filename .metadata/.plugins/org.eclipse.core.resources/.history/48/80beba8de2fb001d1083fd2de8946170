@@ -1,5 +1,3 @@
-// registry
-// see readme for more details
 package vars;
 
 import java.util.*;

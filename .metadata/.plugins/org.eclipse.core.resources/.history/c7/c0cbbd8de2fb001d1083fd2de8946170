@@ -1,4 +1,5 @@
 // Standard Library, contains basic functions like print and whatnot
+// Copyright 2069, your mom corporation
 package exec;
 
 import java.util.*;

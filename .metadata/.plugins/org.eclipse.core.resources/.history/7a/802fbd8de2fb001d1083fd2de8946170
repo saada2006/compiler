@@ -1,4 +1,3 @@
-// integer variable
 package vars;
 
 public class IntVar implements Variable {

@@ -1,4 +1,3 @@
-// exceptions regarding instructions
 package exec;
 
 public class InstructionException extends Exception {
